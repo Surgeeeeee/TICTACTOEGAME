@@ -1,0 +1,107 @@
+
+	import java.awt.*;
+	import java.awt.event.*;
+
+	public class TicTacToe extends Frame implements ActionListener {
+	    
+	    Button[] buttons = new Button[9];
+	    boolean isXTurn = true;
+	    Button newGameButton = new Button("New Game");
+	    
+	    public TicTacToe() {
+	        setLayout(new GridLayout(4, 3));
+	        setSize(300, 400);
+	        setTitle("Tic Tac Toe");
+	        
+	        for (int i = 0; i < 9; i++) {
+	            buttons[i] = new Button("");
+	            buttons[i].setFont(new Font("Arial", Font.PLAIN, 60));
+	            buttons[i].addActionListener(this);
+	            add(buttons[i]);
+	        }
+	        
+	        newGameButton.addActionListener(this);
+	        add(newGameButton);
+	        
+	        addWindowListener(new WindowAdapter() {
+	            public void windowClosing(WindowEvent e) {
+	                dispose();
+	            }
+	        });
+	        
+	        setVisible(true);
+	    }
+	    
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+	        for (int i = 0; i < 9; i++) {
+	            if (e.getSource() == buttons[i]) {
+	                if (buttons[i].getLabel().equals("")) {
+	                    buttons[i].setLabel(isXTurn ? "X" : "O");
+	                    isXTurn = !isXTurn;
+	                    checkWinner();
+	                }
+	                return;
+	            }
+	        }
+	        
+	        if (e.getSource() == newGameButton) {
+	            resetGame();
+	        }
+	    }
+	    
+	    private void checkWinner() {
+	        String[][] grid = new String[3][3];
+	        for (int i = 0; i < 9; i++) {
+	            grid[i / 3][i % 3] = buttons[i].getLabel();
+	        }
+	        
+	        for (int i = 0; i < 3; i++) {
+	            if (!grid[i][0].equals("") && grid[i][0].equals(grid[i][1]) && grid[i][0].equals(grid[i][2])) {
+	                showWinner(grid[i][0]);
+	                return;
+	            }
+	            if (!grid[0][i].equals("") && grid[0][i].equals(grid[1][i]) && grid[0][i].equals(grid[2][i])) {
+	                showWinner(grid[0][i]);
+	                return;
+	            }
+	        }
+	        if (!grid[0][0].equals("") && grid[0][0].equals(grid[1][1]) && grid[0][0].equals(grid[2][2])) {
+	            showWinner(grid[0][0]);
+	            return;
+	        }
+	        if (!grid[0][2].equals("") && grid[0][2].equals(grid[1][1]) && grid[0][2].equals(grid[2][0])) {
+	            showWinner(grid[0][2]);
+	            return;
+	        }
+	    }
+	    
+	    private void showWinner(String winner) {
+	        Dialog d = new Dialog(this, "Game Over", true);
+	        d.setLayout(new FlowLayout());
+	        d.add(new Label(winner + " wins!"));
+	        Button b = new Button("OK");
+	        b.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                d.setVisible(false);
+	                resetGame();
+	            }
+	        });
+	        d.add(b);
+	        d.setSize(200, 100);
+	        d.setVisible(true);
+	    }
+	    
+	    private void resetGame() {
+	        for (int i = 0; i < 9; i++) {
+	            buttons[i].setLabel("");
+	        }
+	        isXTurn = true;
+	    }
+	    
+	    public static void main(String[] args) {
+	        new TicTacToe();
+	    }
+	}
+
+
